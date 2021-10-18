@@ -1,12 +1,15 @@
 import React, {useState} from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
 const Centipede = () => {
     const [count, setCount] = useState(0);
-    const [mainPot, setMainPot] = useState(2);
+    const [mainPot, setMainPot] = useState(3);
     const [sidePot, setSidePot] = useState(1);
     const [take, setTake] = useState(false);
     const [strategy] = useState(Math.floor(Math.random() * 10));
     const [winner, setWinner] = useState(false);
+    const [botAction, setBotAction] = useState(false);
 
     //handle bot turn as well as maxiumum turns
     const handlePass = () => {
@@ -14,23 +17,25 @@ const Centipede = () => {
         setMainPot(prevPot => prevPot * 2);
         setSidePot(prevPot => prevPot * 2);
 
-        console.log(strategy);
-
         if(strategy <= 1){
             //take the pot
             setWinner(false);
             setTake(true);
+            setBotAction(false);
         } else {
             //play determined number of rounds before taking pot
             if(count === 9){
                 setWinner(false);
                 setTake(true);
+                setBotAction(false);
             } else if (count === strategy){
                 setWinner(false);
                 setTake(true);
+                setBotAction(false);
             } else {
                 setMainPot(prevPot => prevPot * 2);
                 setSidePot(prevPot => prevPot * 2);
+                setBotAction(true);
             }
         }
     };
@@ -38,6 +43,10 @@ const Centipede = () => {
     const handleTake = () => {
         setTake(true);
         setWinner(true);
+    }
+
+    function refreshPage(){
+        window.location.reload();
     }
 
 
@@ -48,7 +57,7 @@ const Centipede = () => {
                 Two players take turns choosing to either take the main pot, or pass
                 to the other player. Payoffs are such that if one player (A) passes the pot to
                 the opponent and the opponent takes the pot, player A recieves the side pot - less than if they had 
-                taken the main pot the previous round. The main pot starts at $10, the side pot at $5, 
+                taken the main pot the previous turn. The main pot starts at $3, the side pot at $2, 
                 and both are doubled every time a player passes. For this version there is a maximum of 10 rounds before the pot is taken. Your bot
                 opponent will use varying strategies to demonstrate possible scenarios.
             </p>
@@ -61,6 +70,7 @@ const Centipede = () => {
                     <button onClick={handleTake}>Take</button>
                 </div>
             }
+            <h3>Bot Action: {botAction ? "Pass" : null}</h3>
             {take ?
             <div className="explanation">
                 {winner ? <h3>You took the pot totalling ${mainPot}!</h3> : <h3>The bot took the pot totalling ${mainPot}! You got ${sidePot}.</h3>}
@@ -81,7 +91,9 @@ const Centipede = () => {
                     recieve higher payoffs than the previously mentioned equilibrium. This is
                     interesting because it highlights how the equilibria sometimes fail to predict human play.
                 </p>
-            </div> : null }
+                <FontAwesomeIcon icon={faRedo} className="shuffle" onClick={refreshPage}/>
+            </div> 
+            : null }
         </div>
     )
 }

@@ -14,11 +14,16 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #494B50;
   display: flex;
   justify-content: center;
   font-size: calc(10px + 1.4vmin);
   color: white;
+}
+
+body {
+  color: white;
+  background-color: #33363D;
 }
 
 .App-link {
@@ -38,4 +43,24 @@
   max-width: 60%;
   margin-left: auto;
   margin-right: auto;
+}
+
+.shuffle {
+  font-size: calc(10px + 1.5vmin);
+  color: white;
+  margin: 10px;
+  border-radius: 25px;
+  transition: color 0.3s ease-in-out;
+}
+
+.shuffle:hover {
+  color:rgba(0, 140, 186, 0.7);
+}
+
+a:link {
+  color: #6a89ba;
+}
+
+a:visited {
+  color: #6a89ba;
 }
