@@ -57,7 +57,7 @@ const Centipede = () => {
                 Two players take turns choosing to either take the main pot, or pass
                 to the other player. Payoffs are such that if one player (A) passes the pot to
                 the opponent and the opponent takes the pot, player A recieves the side pot - less than if they had 
-                taken the main pot the previous turn. The main pot starts at $3, the side pot at $2, 
+                taken the main pot the previous turn. The main pot starts at $3, the side pot at $1, 
                 and both are doubled every time a player passes. For this version there is a maximum of 10 rounds before the pot is taken. Your bot
                 opponent will use varying strategies to demonstrate possible scenarios.
             </p>
