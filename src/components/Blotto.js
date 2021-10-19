@@ -32,6 +32,12 @@ const Blotto = () => {
         const { bf1, bf2, bf3} = newValues;
         const newTotal = parseInt(bf1) + parseInt(bf2) + parseInt(bf3) 
         //setTotal(newTotal)
+
+        //if a non-number is entered it disables input
+        if(isNaN(newTotal)){
+            setMaxValues({bf1: 0, bf2: 0, bf3: 0});
+            return;
+        }
     
         const difference = resources-newTotal;
 
