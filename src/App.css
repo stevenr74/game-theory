@@ -13,6 +13,7 @@
   }
 }
 
+
 .App-header {
   background-color: #494B50;
   display: flex;
@@ -43,6 +44,12 @@ body {
   max-width: 60%;
   margin-left: auto;
   margin-right: auto;
+}
+
+@media only screen and (max-width: 600px) {
+  .centipede {
+    max-width: 80%;
+  }
 }
 
 .shuffle {

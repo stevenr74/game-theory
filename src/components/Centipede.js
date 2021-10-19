@@ -3,40 +3,38 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
 const Centipede = () => {
+    const startingPot = 3;
+    const startingSidePot = 1;
+
     const [count, setCount] = useState(0);
-    const [mainPot, setMainPot] = useState(3);
-    const [sidePot, setSidePot] = useState(1);
+    const [mainPot, setMainPot] = useState(startingPot);
+    const [sidePot, setSidePot] = useState(startingSidePot);
     const [take, setTake] = useState(false);
     const [strategy] = useState(Math.floor(Math.random() * 10));
     const [winner, setWinner] = useState(false);
     const [botAction, setBotAction] = useState(false);
 
-    //handle bot turn as well as maxiumum turns
+    
     const handlePass = () => {
+        //player passes
         setCount(prevCount => prevCount + 1);
         setMainPot(prevPot => prevPot * 2);
         setSidePot(prevPot => prevPot * 2);
+        
 
-        if(strategy <= 1){
-            //take the pot
+        //handle bot decisions
+        if(count === 9){
+            setWinner(false);
+            setTake(true);
+            setBotAction(false);
+        } else if (count === strategy){
             setWinner(false);
             setTake(true);
             setBotAction(false);
         } else {
-            //play determined number of rounds before taking pot
-            if(count === 9){
-                setWinner(false);
-                setTake(true);
-                setBotAction(false);
-            } else if (count === strategy){
-                setWinner(false);
-                setTake(true);
-                setBotAction(false);
-            } else {
-                setMainPot(prevPot => prevPot * 2);
-                setSidePot(prevPot => prevPot * 2);
-                setBotAction(true);
-            }
+            setMainPot(prevPot => prevPot * 2);
+            setSidePot(prevPot => prevPot * 2);
+            setBotAction(true);
         }
     };
 
@@ -57,7 +55,7 @@ const Centipede = () => {
                 Two players take turns choosing to either take the main pot, or pass
                 to the other player. Payoffs are such that if one player (A) passes the pot to
                 the opponent and the opponent takes the pot, player A recieves the side pot - less than if they had 
-                taken the main pot the previous turn. The main pot starts at $3, the side pot at $1, 
+                taken the main pot the previous turn. The main pot starts at ${startingPot}, the side pot at ${startingSidePot}, 
                 and both are doubled every time a player passes. For this version there is a maximum of 10 rounds before the pot is taken. Your bot
                 opponent will use varying strategies to demonstrate possible scenarios.
             </p>
