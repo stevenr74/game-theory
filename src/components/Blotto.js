@@ -2,14 +2,17 @@ import React, {useState, useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
+//need to check total on submit to ensure its equal to resources
+
 const Blotto = () => {
     const resources = 13;
-    //const [total, setTotal] = useState(0);
+    const [total, setTotal] = useState(0);
     const [values,set_values] = useState({
         bf1:1,
         bf2:1,
         bf3:1,
     })
+    
     const [maxValues,setMaxValues] = useState({
         bf1:11,
         bf2:11,
@@ -24,14 +27,14 @@ const Blotto = () => {
             [name]: value
         }
         set_values(newValues)
-        // Calling the method to sum the value
         calc_total(newValues) 
     }
     
     const calc_total = (newValues) => {
         const { bf1, bf2, bf3} = newValues;
-        const newTotal = parseInt(bf1) + parseInt(bf2) + parseInt(bf3) 
-        //setTotal(newTotal)
+        const newTotal = parseInt(bf1) + parseInt(bf2) + parseInt(bf3)
+        
+        setTotal(newTotal);
 
         //if a non-number is entered it disables input
         if(isNaN(newTotal)){
