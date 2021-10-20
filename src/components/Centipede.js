@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
-const Centipede = () => {
+const Centipede = (props) => {
     const startingPot = 3;
     const startingSidePot = 1;
 
@@ -20,7 +20,6 @@ const Centipede = () => {
         setCount(prevCount => prevCount + 1);
         setMainPot(prevPot => prevPot * 2);
         setSidePot(prevPot => prevPot * 2);
-        
 
         //handle bot decisions
         if(count === 9){
@@ -42,11 +41,11 @@ const Centipede = () => {
         setTake(true);
         setWinner(true);
     }
-
+    /*
     function refreshPage(){
         window.location.reload();
     }
-
+    */
 
     return (
         <div className="centipede">
@@ -89,7 +88,7 @@ const Centipede = () => {
                     recieve higher payoffs than the previously mentioned equilibrium. This is
                     interesting because it highlights how the equilibria sometimes fail to predict human play.
                 </p>
-                <FontAwesomeIcon icon={faRedo} className="shuffle" onClick={refreshPage}/>
+                <FontAwesomeIcon icon={faRedo} className="shuffle" onClick={props.refreshPage} />
             </div> 
             : null }
         </div>

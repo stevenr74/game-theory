@@ -18,7 +18,7 @@
   background-color: #494B50;
   display: flex;
   justify-content: center;
-  font-size: calc(10px + 1.4vmin);
+  font-size: calc(10px + 1.1vmin);
   color: white;
 }
 
@@ -81,4 +81,9 @@ input[type="number"] {
 
 .submit {
   margin: 10px;
+}
+
+.submitBlotto {
+  position: absolute;
+  margin-left: 20px;
 }

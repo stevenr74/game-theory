@@ -23,6 +23,10 @@ function App() {
     }
   }
 
+  function refreshPage(){
+    window.location.reload();
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -30,8 +34,8 @@ function App() {
       </header>
       <FontAwesomeIcon icon={faChevronLeft} className="shuffle" onClick={handlePrev}/>
       <FontAwesomeIcon icon={faChevronRight} className="shuffle" onClick={handleNext}/>
-      {game === 0 ? <Centipede /> : null}
-      {game === 1 ? <Blotto /> : null}
+      {game === 0 ? <Centipede refreshPage={refreshPage} /> : null}
+      {game === 1 ? <Blotto refreshPage={refreshPage}  /> : null}
     </div>
   );
 }

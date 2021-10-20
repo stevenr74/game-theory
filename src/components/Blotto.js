@@ -4,7 +4,7 @@ import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
 //need to check total on submit to ensure its equal to resources
 
-const Blotto = () => {
+const Blotto = (props) => {
     const resources = 13;
     const [winner, setWinner] = useState(false);
     const [botNumbers, setBotNumbers] = useState(0);
@@ -35,7 +35,8 @@ const Blotto = () => {
         {bf1: 1, bf2: 7, bf3: 5},
         {bf1: 5, bf2: 1, bf3: 7}
     ];
-    
+
+
     const valuesHandler = (e) => {
         let name= e.target.name;
         let value= e.target.value;
@@ -136,6 +137,7 @@ const Blotto = () => {
             setWinner("It's a tie!");
         }
     }
+
     
 
     return (
@@ -151,7 +153,7 @@ const Blotto = () => {
                 <input type="number" id="bf1" value={values["bf1"]} name="bf1" min="1" max={maxValues["bf1"]} onInput={valuesHandler} />
                 <input type="number"  id="bf2" value={values["bf2"]} name="bf2" min="1" max={maxValues["bf2"]} onInput={valuesHandler}/>
                 <input type="number" id="bf3" value={values["bf3"]} name="bf3" min="1" max={maxValues["bf3"]} onInput={valuesHandler}/>
-                <button className="submit" type="submit">Submit</button>
+                <button className="submitBlotto" type="submit">Submit</button>
                 {error ? <p>Enter three numbers totaling {resources}.</p> : null}
             </form>
             {botNumbers !== 0 ?
@@ -176,7 +178,6 @@ const Blotto = () => {
                     </p>
                 </div>
             : null}
-
         </div>
     )
 }
