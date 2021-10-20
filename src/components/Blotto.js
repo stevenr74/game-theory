@@ -51,7 +51,17 @@ const Blotto = () => {
                 "bf3": parseInt(bf3) + difference,
         }
         setMaxValues(newMaxValues);
-    } 
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if(total == resources){
+            //allow to proceed
+        } else {
+            //ask for total resources to equal 13
+        }
+    }
     
 
     return (
@@ -64,7 +74,7 @@ const Blotto = () => {
                 positive integers that add up to {resources}. The player who has two numbers
                 higher than the opponents wins the round, other cases are a draw.
             </p>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <input type="number" id="bf1" value={values["bf1"]} name="bf1" min="1" max={maxValues["bf1"]} onInput={values_handler} />
                 <input type="number"  id="bf2" value={values["bf2"]} name="bf2" min="1" max={maxValues["bf2"]} onInput={values_handler}/>
                 <input type="number" id="bf3" value={values["bf3"]} name="bf3" min="1" max={maxValues["bf3"]} onInput={values_handler}/>
