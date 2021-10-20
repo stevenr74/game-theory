@@ -72,11 +72,13 @@ a:visited {
   color: #6a89ba;
 }
 
-input[type=range][orient=vertical]
-{
-    writing-mode: bt-lr; /* IE */
-    -webkit-appearance: slider-vertical; /* WebKit */
-    width: 8px;
-    height: 175px;
-    padding: 0 5px;
+input[type="number"] {
+  max-width: 50px;
+  min-height: 25px;
+  min-width: 25px;
+  text-align: center;
+}
+
+.submit {
+  margin: 10px;
 }

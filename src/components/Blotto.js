@@ -151,7 +151,7 @@ const Blotto = () => {
                 <input type="number" id="bf1" value={values["bf1"]} name="bf1" min="1" max={maxValues["bf1"]} onInput={valuesHandler} />
                 <input type="number"  id="bf2" value={values["bf2"]} name="bf2" min="1" max={maxValues["bf2"]} onInput={valuesHandler}/>
                 <input type="number" id="bf3" value={values["bf3"]} name="bf3" min="1" max={maxValues["bf3"]} onInput={valuesHandler}/>
-                <button type="submit">Submit</button>
+                <button className="submit" type="submit">Submit</button>
                 {error ? <p>Enter three numbers totaling {resources}.</p> : null}
             </form>
             {botNumbers !== 0 ?
@@ -162,7 +162,21 @@ const Blotto = () => {
                     <input type="number" value={botNumbers.bf3} disabled={true} />
                 </div>
                 : null}
-            {winner ? <h3>{winner}</h3> : null}
+            {winner ? 
+                <div className="explanation">
+                    <h3>{winner}</h3> 
+                    <p>
+                        With resources above 12 deterministic strategies are not optimal.
+                        For example, if resources were 6, (2, 2, 2) would be optimal as it at worst breaks even against other strategies,
+                        and at best beats one. For resources equal to 13, choosing between (3, 5, 5), (3, 3, 7), and (1, 5, 7)
+                        with 1/3 probability each is shown to be the optimal probabilistic strategy. Applications for this game in real life
+                        include military and political strategy as well as strategic hiring decisions. One example of this is two university
+                        departments vying over the same candidates, resuling in many reasonable offers or aggressive offers for a subset
+                        of candidates.
+                    </p>
+                </div>
+            : null}
+
         </div>
     )
 }
