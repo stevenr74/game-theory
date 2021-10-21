@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
@@ -20,7 +20,7 @@ const Blotto = (props) => {
         bf2:11,
         bf3:11,
     })
-    // For S = 13, choosing (3, 5, 5), (3, 3, 7) and (1, 5, 7) 
+
     const permutations = [
         {bf1: 3, bf2: 5, bf3: 5},
         {bf1: 5, bf2: 3, bf3: 5},
@@ -35,6 +35,16 @@ const Blotto = (props) => {
         {bf1: 1, bf2: 7, bf3: 5},
         {bf1: 5, bf2: 1, bf3: 7}
     ];
+
+    const clearState = () => {
+        setWinner(false);
+        setBotNumbers(0);
+        setTotal(0);
+        setError(false);
+        setValues({bf1: 1, bf2: 1, bf3: 1});
+        setMaxValues({bf1: 11, bf2: 11, bf3: 11});
+    }
+
 
 
     const valuesHandler = (e) => {
@@ -83,7 +93,7 @@ const Blotto = (props) => {
     }
 
     function roll() {
-        return Math.floor(Math.random() * 11 + 1); //1-5 uniformly
+        return Math.floor(Math.random() * 11 + 1); //1-10
      }
 
     function chooseNumbers() {
@@ -99,11 +109,10 @@ const Blotto = (props) => {
 
     function choosePermutation() {
         return permutations[Math.floor(Math.random() * permutations.length)];
-     }
+    }
 
     // For S = 13, choosing (3, 5, 5), (3, 3, 7) and (1, 5, 7) 
     //with probability 1/3 each can be shown to be the optimal probabilistic strategy.
-
     //half the time follow optimal probabilistic, other half randomize
     const botStrategy = () => {
         var strat;
@@ -137,7 +146,6 @@ const Blotto = (props) => {
             setWinner("It's a tie!");
         }
     }
-
     
 
     return (
@@ -150,10 +158,13 @@ const Blotto = (props) => {
                 higher than the opponents wins the round, and if points are tied its a draw.
             </p>
             <form onSubmit={handleSubmit}>
+                <h3>Allocate your resources below:</h3>
                 <input type="number" id="bf1" value={values["bf1"]} name="bf1" min="1" max={maxValues["bf1"]} onInput={valuesHandler} />
                 <input type="number"  id="bf2" value={values["bf2"]} name="bf2" min="1" max={maxValues["bf2"]} onInput={valuesHandler}/>
                 <input type="number" id="bf3" value={values["bf3"]} name="bf3" min="1" max={maxValues["bf3"]} onInput={valuesHandler}/>
-                <button className="submitBlotto" type="submit">Submit</button>
+                <div className="submitBlottoDiv">
+                    <button className="submitBlotto" type="submit">Submit</button>
+                </div>
                 {error ? <p>Enter three numbers totaling {resources}.</p> : null}
             </form>
             {botNumbers !== 0 ?
@@ -172,12 +183,12 @@ const Blotto = (props) => {
                         For example, if resources were 6, (2, 2, 2) would be optimal as it at worst breaks even against other strategies,
                         and at best beats one. For resources equal to 13, choosing between (3, 5, 5), (3, 3, 7), and (1, 5, 7)
                         with 1/3 probability each is shown to be the optimal probabilistic strategy. Applications for this game in real life
-                        include military and political strategy as well as strategic hiring decisions. One example of this is two university
-                        departments vying over the same candidates, resuling in many reasonable offers or aggressive offers for a subset
-                        of candidates.
+                        include military and political strategy as well as strategic hiring decisions. One example of this is two companies 
+                        vying over the same candidates, resuling in many reasonable offers or aggressive offers for a subset of candidates.
                     </p>
                 </div>
             : null}
+            {winner ? <FontAwesomeIcon icon={faRedo} onClick={clearState} className="shuffle"/> : null}
         </div>
     )
 }

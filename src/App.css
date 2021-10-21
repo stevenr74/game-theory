@@ -84,6 +84,6 @@ input[type="number"] {
 }
 
 .submitBlotto {
-  position: absolute;
-  margin-left: 20px;
+  text-align: center;
+  margin: 20px;
 }

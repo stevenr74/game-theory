@@ -12,9 +12,14 @@ import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons
 
 function App() {
   const [game, setGame] = useState(0);
+  const gameCount = 1;
 
   const handleNext = () => {
-    setGame(prevGame => prevGame + 1);
+    if( game === gameCount){
+
+    } else {
+      setGame(prevGame => prevGame + 1);
+    }
   }
 
   const handlePrev = () => {
@@ -35,7 +40,7 @@ function App() {
       <FontAwesomeIcon icon={faChevronLeft} className="shuffle" onClick={handlePrev}/>
       <FontAwesomeIcon icon={faChevronRight} className="shuffle" onClick={handleNext}/>
       {game === 0 ? <Centipede refreshPage={refreshPage} /> : null}
-      {game === 1 ? <Blotto refreshPage={refreshPage}  /> : null}
+      {game === 1 ? <Blotto  /> : null}
     </div>
   );
 }
