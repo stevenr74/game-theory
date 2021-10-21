@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
@@ -13,7 +13,6 @@ const Centipede = (props) => {
     const [strategy] = useState(Math.floor(Math.random() * 10));
     const [winner, setWinner] = useState(false);
     const [botAction, setBotAction] = useState(false);
-
     
     const handlePass = () => {
         //player passes
@@ -22,11 +21,7 @@ const Centipede = (props) => {
         setSidePot(prevPot => prevPot * 2);
 
         //handle bot decisions
-        if(count === 9){
-            setWinner(false);
-            setTake(true);
-            setBotAction(false);
-        } else if (count === strategy){
+        if(count === 9 || count === strategy){
             setWinner(false);
             setTake(true);
             setBotAction(false);
@@ -40,12 +35,24 @@ const Centipede = (props) => {
     const handleTake = () => {
         setTake(true);
         setWinner(true);
+        //sendScore(mainPot);
     }
-    /*
-    function refreshPage(){
-        window.location.reload();
-    }
-    */
+
+    //when a winner is found finds winnings for player
+    useEffect(() => {    
+        const sendScore = (data) => {
+            props.passGameScore(data);
+        }
+        
+        if(take === true){
+            if(winner === true){
+                sendScore(mainPot);
+            } else {
+                sendScore(sidePot);
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [take])
 
     return (
         <div className="centipede">

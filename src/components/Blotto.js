@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
 //need to check total on submit to ensure its equal to resources
 
 const Blotto = (props) => {
+    
     const resources = 13;
     const [winner, setWinner] = useState(false);
     const [botNumbers, setBotNumbers] = useState(0);
@@ -20,6 +21,8 @@ const Blotto = (props) => {
         bf2:11,
         bf3:11,
     })
+
+
 
     const permutations = [
         {bf1: 3, bf2: 5, bf3: 5},
@@ -44,8 +47,6 @@ const Blotto = (props) => {
         setValues({bf1: 1, bf2: 1, bf3: 1});
         setMaxValues({bf1: 11, bf2: 11, bf3: 11});
     }
-
-
 
     const valuesHandler = (e) => {
         let name= e.target.name;
@@ -98,7 +99,6 @@ const Blotto = (props) => {
 
     function chooseNumbers() {
         var x = 0, y = 0, z = 0;
-
         while (x + y + z !== 13) {
            x = roll();
            y = roll();
@@ -146,6 +146,24 @@ const Blotto = (props) => {
             setWinner("It's a tie!");
         }
     }
+    /*
+    const sendScore = useCallback((data) => {
+        props.passGameScore(data);
+    }, [])
+    */
+
+    //when a winner is found find winnings
+    useEffect(() => {   
+        const sendScore = (data) => {
+            props.passGameScore(data);
+        }
+        
+        if(winner === 'You won!'){
+            sendScore(100);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [winner])
+
     
 
     return (
@@ -155,16 +173,18 @@ const Blotto = (props) => {
                 Two players distribute finite resources over several battlefields, with each
                 specific battle decided by whoever allocated more resources. In this version, players will record three
                 positive integers that add up to {resources}. The player who has two numbers
-                higher than the opponents wins the round, and if points are tied its a draw.
+                higher than the opponents wins the round (and gets $100 added to winnings), and if points are tied its a draw.
             </p>
             <form onSubmit={handleSubmit}>
                 <h3>Allocate your resources below:</h3>
                 <input type="number" id="bf1" value={values["bf1"]} name="bf1" min="1" max={maxValues["bf1"]} onInput={valuesHandler} />
                 <input type="number"  id="bf2" value={values["bf2"]} name="bf2" min="1" max={maxValues["bf2"]} onInput={valuesHandler}/>
                 <input type="number" id="bf3" value={values["bf3"]} name="bf3" min="1" max={maxValues["bf3"]} onInput={valuesHandler}/>
-                <div className="submitBlottoDiv">
-                    <button className="submitBlotto" type="submit">Submit</button>
-                </div>
+                {winner ? null : 
+                    <div className="submitBlottoDiv">
+                        <button className="submitBlotto" type="submit">Submit</button>
+                    </div>
+                }
                 {error ? <p>Enter three numbers totaling {resources}.</p> : null}
             </form>
             {botNumbers !== 0 ?
