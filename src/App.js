@@ -1,5 +1,5 @@
 import './App.css';
-import React, {useState} from 'react'
+import React, {useCallback, useState} from 'react'
 import Centipede from './components/Centipede';
 import Blotto from './components/Blotto';
 import Score from './components/Score';
@@ -34,9 +34,9 @@ function App() {
     window.location.reload();
   }
 
-  const totalScore = (data) => {
+  const totalScore = useCallback((data) => {
     setGameScore(prevGameScore => prevGameScore + data);
-  }
+  }, [])
 
   return (
     <div className="App">

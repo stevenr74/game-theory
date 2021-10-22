@@ -10,12 +10,23 @@ const Centipede = (props) => {
     const [mainPot, setMainPot] = useState(startingPot);
     const [sidePot, setSidePot] = useState(startingSidePot);
     const [take, setTake] = useState(false);
-    const [strategy] = useState(Math.floor(Math.random() * 10));
+    const [strategy, setStrategy] = useState(Math.floor(Math.random() * 10));
     const [winner, setWinner] = useState(false);
     const [botAction, setBotAction] = useState(false);
+
+    const { passGameScore } = props;
+
+    const clearState = () => {
+        setCount(0);
+        setMainPot(startingPot);
+        setSidePot(startingSidePot);
+        setTake(false);
+        setStrategy(Math.floor(Math.random() * 10));
+        setWinner(false);
+        setBotAction(false);
+    }
     
     const handlePass = () => {
-        //player passes
         setCount(prevCount => prevCount + 1);
         setMainPot(prevPot => prevPot * 2);
         setSidePot(prevPot => prevPot * 2);
@@ -38,12 +49,12 @@ const Centipede = (props) => {
         //sendScore(mainPot);
     }
 
-    //when a winner is found finds winnings for player
+    //when a winner is found enter winnings
+    //might have found a fix for score (usecallback on function in props)
     useEffect(() => {    
         const sendScore = (data) => {
-            props.passGameScore(data);
+            passGameScore(data);
         }
-        
         if(take === true){
             if(winner === true){
                 sendScore(mainPot);
@@ -51,9 +62,8 @@ const Centipede = (props) => {
                 sendScore(sidePot);
             }
         }
+    }, [take, mainPot, sidePot, winner, passGameScore])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [take])
-
     return (
         <div className="centipede">
             <h2>Centipede Game</h2>
@@ -95,7 +105,7 @@ const Centipede = (props) => {
                     recieve higher payoffs than the previously mentioned equilibrium. This is
                     interesting because it highlights how the equilibria sometimes fail to predict human play.
                 </p>
-                <FontAwesomeIcon icon={faRedo} className="shuffle" onClick={props.refreshPage} />
+                <FontAwesomeIcon icon={faRedo} className="shuffle" onClick={clearState} />
             </div> 
             : null }
         </div>
