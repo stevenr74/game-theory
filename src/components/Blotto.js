@@ -11,6 +11,7 @@ const Blotto = (props) => {
     const [botNumbers, setBotNumbers] = useState(0);
     const [total, setTotal] = useState(0);
     const [error, setError] = useState(false);
+    const { passGameScore } = props;
     const [values,setValues] = useState({
         bf1:1,
         bf2:1,
@@ -21,9 +22,6 @@ const Blotto = (props) => {
         bf2:11,
         bf3:11,
     })
-
-
-
     const permutations = [
         {bf1: 3, bf2: 5, bf3: 5},
         {bf1: 5, bf2: 3, bf3: 5},
@@ -146,25 +144,18 @@ const Blotto = (props) => {
             setWinner("It's a tie!");
         }
     }
-    /*
-    const sendScore = useCallback((data) => {
-        props.passGameScore(data);
-    }, [])
-    */
 
-    //when a winner is found find winnings
-    useEffect(() => {   
+    useEffect(() => {    
         const sendScore = (data) => {
-            props.passGameScore(data);
+            passGameScore(data);
         }
-        
         if(winner === 'You won!'){
             sendScore(100);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [winner])
+        } else {
 
-    
+        }
+    }, [winner, passGameScore])
+
 
     return (
         <div className="centipede">
