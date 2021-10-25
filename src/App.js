@@ -3,6 +3,7 @@ import React, {useCallback, useState} from 'react'
 import Centipede from './components/Centipede';
 import Blotto from './components/Blotto';
 import Score from './components/Score';
+import Kuhn from './components/Kuhn';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
@@ -14,7 +15,7 @@ import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons
 function App() {
   const [game, setGame] = useState(0);
   const [gameScore, setGameScore] = useState(0);
-  const gameCount = 1;
+  const gameCount = 2;
 
   const handleNext = () => {
     if( game === gameCount){
@@ -30,10 +31,6 @@ function App() {
     }
   }
 
-  function refreshPage(){
-    window.location.reload();
-  }
-
   const totalScore = useCallback((data) => {
     setGameScore(prevGameScore => prevGameScore + data);
   }, [])
@@ -46,8 +43,9 @@ function App() {
       <Score score={gameScore} />
       <FontAwesomeIcon icon={faChevronLeft} className="shuffle" onClick={handlePrev}/>
       <FontAwesomeIcon icon={faChevronRight} className="shuffle" onClick={handleNext}/>
-      {game === 0 ? <Centipede refreshPage={refreshPage} passGameScore={totalScore}/> : null}
+      {game === 0 ? <Centipede passGameScore={totalScore}/> : null}
       {game === 1 ? <Blotto  passGameScore={totalScore} /> : null}
+      {game === 2 ? <Kuhn passGameScore={totalScore}/> : null}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { faRedo } from '@fortawesome/free-solid-svg-icons';
 const Blotto = (props) => {
     
     const resources = 13;
+    const reward = 1000;
     const [winner, setWinner] = useState(false);
     const [botNumbers, setBotNumbers] = useState(0);
     const [total, setTotal] = useState(0);
@@ -150,7 +151,7 @@ const Blotto = (props) => {
             passGameScore(data);
         }
         if(winner === 'You won!'){
-            sendScore(100);
+            sendScore(reward);
         } else {
 
         }
@@ -164,7 +165,7 @@ const Blotto = (props) => {
                 Two players distribute finite resources over several battlefields, with each
                 specific battle decided by whoever allocated more resources. In this version, players will record three
                 positive integers that add up to {resources}. The player who has two numbers
-                higher than the opponents wins the round (and gets $100 added to winnings), and if points are tied its a draw.
+                higher than the opponents wins the round (and gets ${reward} added to winnings), and if points are tied its a draw.
             </p>
             <form onSubmit={handleSubmit}>
                 <h3>Allocate your resources below:</h3>
