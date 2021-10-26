@@ -92,3 +92,12 @@ input[type="number"] {
   padding: 15px;
   max-width: 125px;
 }
+
+.cardLabels {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.cardLabelPlayer {
+  margin-right: 30px;
+}

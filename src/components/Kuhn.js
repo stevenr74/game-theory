@@ -18,6 +18,7 @@ const Kuhn = (props) => {
     const [winner, setWinner] = useState(null);
     const [playerOwes, setPlayerOwes] = useState(0);
     const [botOwes, setBotOwes] = useState(0);
+    const [botAction, setBotAction] = useState('None');
 
     const cards = {
         1: king,
@@ -51,6 +52,9 @@ const Kuhn = (props) => {
         }
     }
 
+    //pass parameters that identify caller for check, bet, and fold
+    //allowing both bot & human to use them
+
     const ante = () => {
         setPot(prevAnteCost => prevAnteCost + (anteCost * 2));
         setPlayerStack(prevPlayerStack => prevPlayerStack - anteCost);
@@ -70,8 +74,8 @@ const Kuhn = (props) => {
         botChoice();
     }
 
-    const fold = () => {
-
+    const fold = (caller) => {
+        setWinner(true);
     }
 
     const botChoice = () => {
@@ -79,6 +83,7 @@ const Kuhn = (props) => {
             //fold();
         } else if (botCardNumber === 2) {
             //bet();
+
         } else {
             //bet();
         }
@@ -101,22 +106,34 @@ const Kuhn = (props) => {
                 <h3>Player Stack: ${playerStack}</h3>
                 <h3>Bot Stack: ${botStack}</h3>
             </div>
-            {(playerCard !== false) ? <img src={playerCard} alt="card" className="cards"></img> : null}
-            {(botCard !== false) ? <img src={deck} alt="card" className="cards"></img> : null}
-            <div className="submitBlottoDiv">
-                {(playerOwes => 1) ?
-                    <div className="noBet">
-                        <button>Check</button>
-                        <button>Bet 1</button>
-                    </div>
-                    :
-                    <div className="bet">
-                        <button>Call</button>
-                        <button>Fold</button>
-                    </div>
-                }
-            </div>
-            <h3>Pot: ${pot}</h3>
+            {playerCard !== false ?
+                <>
+                <div className="cardLabels">
+                    <h3 className="cardLabelPlayer">Your Card</h3>
+                    <h3 className="cardLabelBot">Bot's Card</h3>
+                </div>
+                <div>
+                    <img src={playerCard} alt="card" className="cards"></img>
+                    {winner ? <img src={botCard} alt="card" className="cards"></img> : <img src={deck} alt="card" className="cards"></img>}
+                </div>
+                <div className="submitBlottoDiv">
+                    {(playerOwes => 1) ?
+                        <div className="noBet">
+                            <button onClick={check}>Check</button>
+                            <button onClick={bet}>Bet 1</button>
+                            <button onClick={fold}>Fold</button>
+                        </div>
+                        :
+                        <div className="bet">
+                            <button onClick={bet}>Call</button>
+                            <button onClick={fold}>Fold</button>
+                        </div>
+                    }
+                </div>
+                <h3>Bot Action: {botAction}</h3>
+                <h3>Pot: ${pot}</h3>
+                </>
+            : null}
         </div>
     )
 }
