@@ -11,11 +11,14 @@ const Kuhn = (props) => {
     const [playerStack, setPlayerStack] = useState(100);
     const [botStack, setBotStack] = useState(100);
     const [botCard, setBotCard] = useState(false);
+    const [playerCardNumber, setPlayerCardNumber] = useState(0);
+    const [botCardNumber, setBotCardNumber] = useState(0);
     const [pot, setPot] = useState(0);
-    const [playerTurn, setPlayerTurn] = useState(false);
+    //const [playerTurn, setPlayerTurn] = useState(false);
     const [winner, setWinner] = useState(null);
     const [playerOwes, setPlayerOwes] = useState(0);
     const [botOwes, setBotOwes] = useState(0);
+
     const cards = {
         1: king,
         2: queen, 
@@ -39,6 +42,8 @@ const Kuhn = (props) => {
         if(pCard !== bCard){
             setPlayerCard(cards[pCard]);
             setBotCard(cards[bCard]);
+            setPlayerCardNumber(pCard);
+            setBotCardNumber(bCard);
             ante();
             return;
         } else {
@@ -47,25 +52,37 @@ const Kuhn = (props) => {
     }
 
     const ante = () => {
-        setPot(anteCost * 2);
+        setPot(prevAnteCost => prevAnteCost + (anteCost * 2));
         setPlayerStack(prevPlayerStack => prevPlayerStack - anteCost);
         setBotStack(prevBotStack => prevBotStack - anteCost);
     }
 
     const check = () => {
-        setPlayerTurn(prevPlayerTurn => !prevPlayerTurn);
+        //setPlayerTurn(prevPlayerTurn => !prevPlayerTurn);
+        botChoice();
     }
 
     //can also be used for call
     const bet = () => {
         setPot(pot + anteCost);
-        setPlayerTurn(prevPlayerTurn => !prevPlayerTurn);
+        setBotOwes(anteCost);
+        //setPlayerTurn(prevPlayerTurn => !prevPlayerTurn);
+        botChoice();
     }
 
     const fold = () => {
 
     }
 
+    const botChoice = () => {
+        if(botCardNumber === 3){
+            //fold();
+        } else if (botCardNumber === 2) {
+            //bet();
+        } else {
+            //bet();
+        }
+    }
 
 
     return (
@@ -87,10 +104,17 @@ const Kuhn = (props) => {
             {(playerCard !== false) ? <img src={playerCard} alt="card" className="cards"></img> : null}
             {(botCard !== false) ? <img src={deck} alt="card" className="cards"></img> : null}
             <div className="submitBlottoDiv">
-                <button>Check</button>
-                <button>Bet 1</button>
-                <button>Call</button>
-                <button>Fold</button>
+                {(playerOwes => 1) ?
+                    <div className="noBet">
+                        <button>Check</button>
+                        <button>Bet 1</button>
+                    </div>
+                    :
+                    <div className="bet">
+                        <button>Call</button>
+                        <button>Fold</button>
+                    </div>
+                }
             </div>
             <h3>Pot: ${pot}</h3>
         </div>
