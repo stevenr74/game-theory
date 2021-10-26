@@ -8,12 +8,20 @@ import deck from './images/deck.jpg'
 
 const Kuhn = (props) => {
     const [playerCard, setPlayerCard] = useState(false);
+    const [playerStack, setPlayerStack] = useState(100);
+    const [botStack, setBotStack] = useState(100);
     const [botCard, setBotCard] = useState(false);
+    const [pot, setPot] = useState(0);
+    const [playerTurn, setPlayerTurn] = useState(false);
+    const [winner, setWinner] = useState(null);
+    const [playerOwes, setPlayerOwes] = useState(0);
+    const [botOwes, setBotOwes] = useState(0);
     const cards = {
         1: king,
         2: queen, 
         3: jack
     };
+    const anteCost = 1;
 
 
     const clearState = () => {
@@ -31,13 +39,34 @@ const Kuhn = (props) => {
         if(pCard !== bCard){
             setPlayerCard(cards[pCard]);
             setBotCard(cards[bCard]);
-
-            console.log(cards[pCard]);
-            console.log(cards[bCard]);
+            ante();
+            return;
         } else {
             deal();
         }
     }
+
+    const ante = () => {
+        setPot(anteCost * 2);
+        setPlayerStack(prevPlayerStack => prevPlayerStack - anteCost);
+        setBotStack(prevBotStack => prevBotStack - anteCost);
+    }
+
+    const check = () => {
+        setPlayerTurn(prevPlayerTurn => !prevPlayerTurn);
+    }
+
+    //can also be used for call
+    const bet = () => {
+        setPot(pot + anteCost);
+        setPlayerTurn(prevPlayerTurn => !prevPlayerTurn);
+    }
+
+    const fold = () => {
+
+    }
+
+
 
     return (
         <div className="centipede">
@@ -47,11 +76,23 @@ const Kuhn = (props) => {
                 are dealt a card from a three card deck containing a King, Queen, and Jack. Players then place
                 bets like in poker (calling/raising/folding), with the player with the highest card winning at showdown.
 
-                To start the game, click the deck to deal the cards.
             </p>
-            <input type="image" src={deck} onClick={deal} alt="deck" className="cards"/>
+            <div className="submitBlottoDiv">
+                <button className="submitBlotto" onClick={deal}>Deal</button>
+            </div>
+            <div className="stacks">
+                <h3>Player Stack: ${playerStack}</h3>
+                <h3>Bot Stack: ${botStack}</h3>
+            </div>
             {(playerCard !== false) ? <img src={playerCard} alt="card" className="cards"></img> : null}
-            <FontAwesomeIcon icon={faRedo} onClick={clearState} className="shuffle"/>
+            {(botCard !== false) ? <img src={deck} alt="card" className="cards"></img> : null}
+            <div className="submitBlottoDiv">
+                <button>Check</button>
+                <button>Bet 1</button>
+                <button>Call</button>
+                <button>Fold</button>
+            </div>
+            <h3>Pot: ${pot}</h3>
         </div>
     )
 }

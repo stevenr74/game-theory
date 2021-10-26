@@ -89,5 +89,6 @@ input[type="number"] {
 }
 
 .cards {
+  padding: 15px;
   max-width: 125px;
 }
