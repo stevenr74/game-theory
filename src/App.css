@@ -87,3 +87,7 @@ input[type="number"] {
   text-align: center;
   margin: 20px;
 }
+
+.cards {
+  max-width: 125px;
+}
