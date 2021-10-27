@@ -95,9 +95,9 @@ input[type="number"] {
 
 .cardLabels {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
 }
 
 .cardLabelPlayer {
-  margin-right: 30px;
+  margin-right: 70px;
 }
