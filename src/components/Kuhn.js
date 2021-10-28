@@ -7,42 +7,39 @@ import jack  from './images/jack.png'
 import deck from './images/deck.jpg'
 
 const Kuhn = (props) => {
-    const [playerCard, setPlayerCard] = useState(false);
-    const [playerStack, setPlayerStack] = useState(100);
-    const [botStack, setBotStack] = useState(100);
-    const [botCard, setBotCard] = useState(false);
-    const [botCardNumber, setBotCardNumber] = useState(0);
-    const [pot, setPot] = useState(0);
-    const [winner, setWinner] = useState(null);
-    const [playerOwes, setPlayerOwes] = useState(0);
-    const [botAction, setBotAction] = useState('None');
-    const [playerAction, setPlayerAction] = useState('None');
-    const [handCount, setHandCount] = useState(0);
-
-    
-    //let owes;
-    //let currentPot;
-    const owes = useRef(0);
-    const currentPot = useRef(0);
-    const currentPlayerStack = useRef(100);
-    const currentBotStack = useRef(100);
-
     const cards = {
         1: king,
         2: queen, 
         3: jack
     };
-    const anteCost = 1;
+    const anteCost = 10;
     const moves = {
         CHECK: "Check",
         BET: "Bet",
         FOLD: "Fold",
         CALL: "Call",
+        NONE: "None"
     }
     const players = {
         BOT: "Bot",
         HUMAN: "You",
     }
+
+    const [playerCard, setPlayerCard] = useState(false);
+    const [playerStack, setPlayerStack] = useState(100);
+    const [botStack, setBotStack] = useState(100);
+    const [botCard, setBotCard] = useState(false);
+    const [botCardNumber, setBotCardNumber] = useState(0);
+    const [playerCardNumber, setPlayerCardNumber] = useState(0);
+    const [pot, setPot] = useState(0);
+    const [winner, setWinner] = useState(null);
+    const [playerOwes, setPlayerOwes] = useState(0);
+    const [botAction, setBotAction] = useState(moves.NONE);
+
+    const owes = useRef(0);
+    const currentPot = useRef(0);
+    const currentPlayerStack = useRef(100);
+    const currentBotStack = useRef(100);
 
     const refresh = () => {
         setPlayerCard(false);
@@ -53,7 +50,7 @@ const Kuhn = (props) => {
         setPot(0);
         setWinner(null);
         setPlayerOwes(0);
-        setBotAction('None');
+        setBotAction(moves.NONE);
     }
 
     function getRandomInt(min, max){
@@ -64,19 +61,17 @@ const Kuhn = (props) => {
         //need to clear states of in-play variables for next hand
         setWinner(null);
         setPlayerOwes(0);
-        setBotAction('None');
-        //setPot(0);
+        setBotAction(moves.NONE);
         
         currentPot.current = 0;
         owes.current = 0;
-
         var pCard = getRandomInt(1, 3);
         var bCard = getRandomInt(1, 3);
 
         if(pCard !== bCard){
             setPlayerCard(cards[pCard]);
             setBotCard(cards[bCard]);
-            //setPlayerCardNumber(pCard);
+            setPlayerCardNumber(pCard);
             setBotCardNumber(bCard);
             ante();
             return;
@@ -91,10 +86,6 @@ const Kuhn = (props) => {
         currentBotStack.current -= anteCost;
 
         setPot(currentPot.current);
-        /*
-        setPlayerStack(prevPlayerStack => prevPlayerStack - anteCost);
-        setBotStack(prevBotStack => prevBotStack - anteCost);
-        */
         setPlayerStack(currentPlayerStack.current);
         setBotStack(currentBotStack.current);
     }
@@ -108,26 +99,17 @@ const Kuhn = (props) => {
     const playerBet = () => {
         currentPlayerStack.current -= anteCost;
         currentPot.current += anteCost;
-
         setPot(currentPot.current);
         owes.current = 1;
         setPlayerOwes(0);
-
-        //setPlayerStack(prevPlayerStack => prevPlayerStack - anteCost);
         setPlayerStack(currentPlayerStack.current)
-
-        setPlayerAction(moves.BET);
         botChoice();
-
-        console.log('current pot at pbet: ' + currentPot.current);
-        //dealer(players.HUMAN);
     }
 
     const playerFold = () => {
         currentBotStack.current += currentPot.current;
 
         setWinner(players.BOT);
-        //setBotStack(prevBotStack => prevBotStack + pot);
         setBotStack(currentBotStack.current);
     }
 
@@ -162,7 +144,23 @@ const Kuhn = (props) => {
 
     //check->check = showdown
     const botCheck = () => {
+        //check-check = find winner
         setBotAction(moves.CHECK);
+        if(botCardNumber > playerCardNumber ){
+            //bot wins
+            currentBotStack.current += currentPot.current;
+
+            setWinner(players.BOT);
+            setBotAction(moves.CHECK);
+            setBotStack(currentBotStack.current);
+        } else {
+            //player wins
+            currentPlayerStack.current += currentPot.current;
+            
+            setWinner(players.HUMAN);
+            setBotAction(moves.CHECK);
+            setPlayerStack(currentPlayerStack.current);
+        }
         //find winner
     }
 
@@ -172,11 +170,7 @@ const Kuhn = (props) => {
         owes.current = 0;
 
         setPot(currentPot.current);
-        
-        //setBotStack(botStack - anteCost);
         setBotStack(currentBotStack.current);
-
-
         setBotAction(moves.CALL);
     }
 
@@ -186,8 +180,8 @@ const Kuhn = (props) => {
         currentPot.current += anteCost;
         currentBotStack.current -= anteCost;
         owes.current = 0;
-        setPot(currentPot.current);
 
+        setPot(currentPot.current);
         setBotStack(currentBotStack.current);
         setPlayerOwes(anteCost);
         setBotAction(moves.BET);
@@ -195,21 +189,20 @@ const Kuhn = (props) => {
 
     const botFold = () => {
         currentPlayerStack.current += currentPot.current;
+
         setWinner(players.HUMAN);
         setBotAction(moves.FOLD);
-        console.log("player stack at bot fold: " + playerStack);
-        //setPlayerStack(playerStack + currentPot.current);
         setPlayerStack(currentPlayerStack.current);
     }
 
 
     return (
         <div className="centipede">
-            <h2>Kuhn Poker</h2>
+            <h2>Simplified Poker</h2>
             <p>
-                Kuhn Poker is an zero-sum imperfect-information game based on standard poker. Two players
-                are dealt a card from a three card deck containing a King, Queen, and Jack. Players then place
-                bets like in poker (calling/raising/folding), with the player with the highest card winning at showdown.
+                Also known as Kuhn Poker, this simplified version is an zero-sum imperfect-information game based on standard poker. Two players
+                are dealt a card from a three card deck containing a King, Queen, and Jack, and put in the same ante of ${anteCost}. Players then place
+                bets like in poker (calling/raising/folding), with the player with the highest card winning if a showdown occurs.
 
             </p>
             <div className="submitBlottoDiv">
@@ -233,7 +226,7 @@ const Kuhn = (props) => {
                     {playerOwes === 0 ?
                         <div className="noBet">
                             <button onClick={playerCheck}>Check</button>
-                            <button onClick={playerBet}>Bet 1</button>
+                            <button onClick={playerBet}>Bet {anteCost}</button>
                         </div>
                         :
                         <div className="bet">
