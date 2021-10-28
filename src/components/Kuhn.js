@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 import king  from './images/king.png'
@@ -15,8 +15,17 @@ const Kuhn = (props) => {
     const [pot, setPot] = useState(0);
     const [winner, setWinner] = useState(null);
     const [playerOwes, setPlayerOwes] = useState(0);
-    const [botOwes, setBotOwes] = useState(0);
     const [botAction, setBotAction] = useState('None');
+    const [playerAction, setPlayerAction] = useState('None');
+    const [handCount, setHandCount] = useState(0);
+
+    
+    //let owes;
+    //let currentPot;
+    const owes = useRef(0);
+    const currentPot = useRef(0);
+    const currentPlayerStack = useRef(100);
+    const currentBotStack = useRef(100);
 
     const cards = {
         1: king,
@@ -24,8 +33,16 @@ const Kuhn = (props) => {
         3: jack
     };
     const anteCost = 1;
-
-    //const [playerCardNumber, setPlayerCardNumber] = useState(0);
+    const moves = {
+        CHECK: "Check",
+        BET: "Bet",
+        FOLD: "Fold",
+        CALL: "Call",
+    }
+    const players = {
+        BOT: "Bot",
+        HUMAN: "You",
+    }
 
     const refresh = () => {
         setPlayerCard(false);
@@ -36,7 +53,6 @@ const Kuhn = (props) => {
         setPot(0);
         setWinner(null);
         setPlayerOwes(0);
-        setBotOwes(0);
         setBotAction('None');
     }
 
@@ -48,10 +64,11 @@ const Kuhn = (props) => {
         //need to clear states of in-play variables for next hand
         setWinner(null);
         setPlayerOwes(0);
-        setBotOwes(0);
         setBotAction('None');
-        setPot(0);
+        //setPot(0);
         
+        currentPot.current = 0;
+        owes.current = 0;
 
         var pCard = getRandomInt(1, 3);
         var bCard = getRandomInt(1, 3);
@@ -69,51 +86,120 @@ const Kuhn = (props) => {
     }
 
     const ante = () => {
-        setPot(prevAnteCost => prevAnteCost + (anteCost * 2));
+        currentPot.current = anteCost + anteCost;
+        currentPlayerStack.current -= anteCost;
+        currentBotStack.current -= anteCost;
+
+        setPot(currentPot.current);
+        /*
         setPlayerStack(prevPlayerStack => prevPlayerStack - anteCost);
         setBotStack(prevBotStack => prevBotStack - anteCost);
+        */
+        setPlayerStack(currentPlayerStack.current);
+        setBotStack(currentBotStack.current);
     }
 
-    const check = () => {
+    const playerCheck = () => {
+        owes.current = 0;
         botChoice();
     }
 
     //can also be used for call
-    const bet = () => {
-        setPot(pot + anteCost);
-        setBotOwes(anteCost);
+    const playerBet = () => {
+        currentPlayerStack.current -= anteCost;
+        currentPot.current += anteCost;
+
+        setPot(currentPot.current);
+        owes.current = 1;
         setPlayerOwes(0);
-        setPlayerStack(prevPlayerStack => prevPlayerStack - anteCost);
+
+        //setPlayerStack(prevPlayerStack => prevPlayerStack - anteCost);
+        setPlayerStack(currentPlayerStack.current)
+
+        setPlayerAction(moves.BET);
         botChoice();
+
+        console.log('current pot at pbet: ' + currentPot.current);
+        //dealer(players.HUMAN);
     }
 
-    const fold = () => {
-        setWinner('Bot');
-        setBotStack(prevBotStack => prevBotStack + pot);
+    const playerFold = () => {
+        currentBotStack.current += currentPot.current;
+
+        setWinner(players.BOT);
+        //setBotStack(prevBotStack => prevBotStack + pot);
+        setBotStack(currentBotStack.current);
     }
 
     //need to extend logic for K/Q decision making
     const botChoice = () => {
-        //testing === 3
-        if(botCardNumber < 4){
-            //fold
-            setWinner('You');
-            setBotAction('Fold');
-            setPlayerStack(playerStack + pot);
-        } else  {
-            if(botOwes === 0){
-                //call
-                setPot(pot + anteCost);
-                setBotStack(botStack - anteCost);
-                setBotAction('Call');
+        console.log('owes at botchoice:' + owes.current);
+        if(botCardNumber === 3){
+            if(owes.current === 0){
+                //check
+                botCheck();
             } else {
-                //bet
-                setPot(pot + anteCost);
-                setBotStack(botStack - anteCost);
-                setPlayerOwes(anteCost);
-                setBotAction('Raise');
+                //fold
+                botFold();
             }
+        } else if (botCardNumber === 2) {
+            if(owes.current === 0){
+                //bet or fold
+                botBet();
+            } else {
+                //human bet, could have king
+                if(currentPot.current < 5){
+                    botCall();
+                } else {
+                    botFold();
+                }
+            }
+        } else {
+            //have king, keep betting
+            botBet();
         } 
+    }
+
+    //check->check = showdown
+    const botCheck = () => {
+        setBotAction(moves.CHECK);
+        //find winner
+    }
+
+    const botCall = () => {
+        currentPot.current += anteCost;
+        currentBotStack.current -= anteCost;
+        owes.current = 0;
+
+        setPot(currentPot.current);
+        
+        //setBotStack(botStack - anteCost);
+        setBotStack(currentBotStack.current);
+
+
+        setBotAction(moves.CALL);
+    }
+
+    //when bot bets it isnt added to pot?
+    //something wrong with setpot & currentpot <3 <3 goodnight
+    const botBet = () => {
+        currentPot.current += anteCost;
+        currentBotStack.current -= anteCost;
+        owes.current = 0;
+        setPot(currentPot.current);
+
+        setBotStack(currentBotStack.current);
+        setPlayerOwes(anteCost);
+        setBotAction(moves.BET);
+    }
+
+    const botFold = () => {
+        currentPlayerStack.current += currentPot.current;
+        setWinner(players.HUMAN);
+        setBotAction(moves.FOLD);
+        console.log("player stack at bot fold: " + playerStack);
+        //setPlayerStack(playerStack + currentPot.current);
+        setPlayerStack(currentPlayerStack.current);
     }
 
 
@@ -146,13 +232,13 @@ const Kuhn = (props) => {
                 <div className="submitBlottoDiv">
                     {playerOwes === 0 ?
                         <div className="noBet">
-                            <button onClick={check}>Check</button>
-                            <button onClick={bet}>Bet 1</button>
+                            <button onClick={playerCheck}>Check</button>
+                            <button onClick={playerBet}>Bet 1</button>
                         </div>
                         :
                         <div className="bet">
-                            <button onClick={bet}>Call</button>
-                            <button onClick={fold}>Fold</button>
+                            <button onClick={playerBet}>Call</button>
+                            <button onClick={playerFold}>Fold</button>
                         </div>
                     }
                 </div>

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
-//need to check total on submit to ensure its equal to resources
+//implement resource allocation via drag and drop?
 
 const Blotto = (props) => {
     
