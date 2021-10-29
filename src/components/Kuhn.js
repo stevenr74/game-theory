@@ -26,9 +26,11 @@ const Kuhn = (props) => {
         HUMAN: "You",
     }
 
+    const startingStack = 100;
+
     const [playerCard, setPlayerCard] = useState(false);
-    const [playerStack, setPlayerStack] = useState(100);
-    const [botStack, setBotStack] = useState(100);
+    const [playerStack, setPlayerStack] = useState(startingStack);
+    const [botStack, setBotStack] = useState(startingStack);
     const [botCard, setBotCard] = useState(false);
     const [pot, setPot] = useState(0);
     const [winner, setWinner] = useState(null);
@@ -41,20 +43,20 @@ const Kuhn = (props) => {
     const { passGameScore } = props;
     const owes = useRef(0);
     const currentPot = useRef(0);
-    const currentPlayerStack = useRef(100);
-    const currentBotStack = useRef(100);
+    const currentPlayerStack = useRef(startingStack);
+    const currentBotStack = useRef(startingStack);
 
     const refresh = () => {
-        currentBotStack.current = 100;
-        currentPlayerStack.current = 100;
+        currentBotStack.current = startingStack;
+        currentPlayerStack.current = startingStack;
         owes.current = 0;
         currentPot.current = 0;
         currentBotCardNumber.current = 0;
         currentPlayerCardNumber.current = 0;
 
         setPlayerCard(false);
-        setPlayerStack(100);
-        setBotStack(100);
+        setPlayerStack(startingStack);
+        setBotStack(startingStack);
         setBotCard(false);
         setPot(0);
         setWinner(null);
@@ -181,12 +183,15 @@ const Kuhn = (props) => {
                 //bet or fold
                 botBet();
             } else {
-                //human bet, could have king
+                //human bet, could have king - taking out logic for testing
+                /*
                 if(currentPot.current <= (3 * anteCost)){
                     botCall();
                 } else {
                     botFold();
                 }
+                */
+               botFold();
             }
         } else {
             //have king, keep betting
@@ -277,7 +282,8 @@ const Kuhn = (props) => {
             <p>
                 Also known as Kuhn Poker, this simplified version is an zero-sum imperfect-information game based on standard poker. Two players
                 are dealt a card from a three card deck containing a King, Queen, and Jack, and put in the same ante of ${anteCost}. Players then place
-                bets like in poker (calling/raising/folding), with the player with the highest card winning if a showdown occurs.
+                bets like in poker (calling/raising/folding), with the player with the highest card winning if a showdown occurs. The bot will vary its 
+                actions with each card to demonstrate different scenarios.
 
             </p>
             {(gameWinner === false) ? <div className="pokerWin">
