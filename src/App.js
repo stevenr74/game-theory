@@ -1,9 +1,9 @@
 import './App.css';
 import React, {useCallback, useState} from 'react'
-import Centipede from './components/Centipede';
-import Blotto from './components/Blotto';
-import Score from './components/Score';
-import Kuhn from './components/Kuhn';
+import Centipede from './components/Centipede.js';
+import Blotto from './components/Blotto.js';
+import Score from './components/Score.js';
+import Kuhn from './components/Kuhn.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
