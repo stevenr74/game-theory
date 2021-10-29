@@ -18,7 +18,8 @@ const Kuhn = (props) => {
         BET: "Bet",
         FOLD: "Fold",
         CALL: "Call",
-        NONE: "None"
+        NONE: "None",
+        ALLIN: "All-in",
     }
     const players = {
         BOT: "Bot",
@@ -35,6 +36,7 @@ const Kuhn = (props) => {
     const [winner, setWinner] = useState(null);
     const [playerOwes, setPlayerOwes] = useState(0);
     const [botAction, setBotAction] = useState(moves.NONE);
+    const [gameWinner, setGameWinner] = useState(false);
 
     const { passGameScore } = props;
     const owes = useRef(0);
@@ -54,19 +56,43 @@ const Kuhn = (props) => {
         setBotAction(moves.NONE);
     }
 
+    //monitor player/bot scores, set winner and update winnings
     useEffect(() => {    
         const sendScore = (data) => {
             passGameScore(data);
         }
-        //call sendScore when playerstack is higher/lower than 100
-    }, [winner, passGameScore])
+        if(currentPlayerStack.current <= 0 || currentBotStack.current <= 0){
+            if(botCardNumber > playerCardNumber ){
+                currentPlayerStack.current += currentPot.current;
+                setWinner(players.HUMAN);
+                setPlayerStack(currentPlayerStack.current);
+            } else {
+                currentBotStack.current += currentPot.current;
+                setWinner(players.BOT);
+                setBotStack(currentBotStack.current);
+            }
+        }
+    
+        if(botStack <= 0 && winner !== null){
+            //human won, declare winner and give winnings
+            setGameWinner(true);
+            setWinner(players.HUMAN);
+            sendScore(currentPlayerStack.current);
+        } else if (playerStack <= 0 && winner !== null)  {
+            //bot won, declaer winner
+            setGameWinner(true);
+            setWinner(players.BOT);
+        } else {
+            //no one has won, do nothing
+        }
+    }, [playerStack, botStack, passGameScore, players.BOT, players.HUMAN, botCardNumber, playerCardNumber, winner])
 
     function getRandomInt(min, max){
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
     const deal = () => {
-        //need to clear states of in-play variables for next hand
+        
         setWinner(null);
         setPlayerOwes(0);
         setBotAction(moves.NONE);
@@ -122,7 +148,7 @@ const Kuhn = (props) => {
         setBotStack(currentBotStack.current);
     }
 
-    //need to extend logic for K/Q decision making
+    //need to extend logic for K/Q decision making, maybe randomize
     const botChoice = () => {
         if(botCardNumber === 3){
             if(owes.current === 0){
@@ -154,7 +180,7 @@ const Kuhn = (props) => {
     const botCheck = () => {
         //check-check = find winner
         setBotAction(moves.CHECK);
-        if(botCardNumber > playerCardNumber ){
+        if(botCardNumber < playerCardNumber ){
             //bot wins
             currentBotStack.current += currentPot.current;
 
@@ -182,8 +208,6 @@ const Kuhn = (props) => {
         setBotAction(moves.CALL);
     }
 
-    //when bot bets it isnt added to pot?
-    //something wrong with setpot & currentpot <3 <3 goodnight
     const botBet = () => {
         currentPot.current += anteCost;
         currentBotStack.current -= anteCost;
@@ -207,6 +231,31 @@ const Kuhn = (props) => {
         setPlayerStack(currentPlayerStack.current);
     }
 
+    const allIn = () => {
+        if(botCardNumber > playerCardNumber ){
+            currentPlayerStack.current += currentPot.current;
+            setWinner(players.HUMAN);
+            setPlayerStack(currentPlayerStack.current);
+        } else {
+            currentBotStack.current += currentPot.current;
+
+            setWinner(players.BOT);
+            setBotStack(currentBotStack.current);
+        }
+    }
+    /*
+    if(playerStack <= 0 || botStack <= 0){
+        allIn();
+    }
+    */
+    
+    //if one stack is = 0, they are all in and the cards are decided then.
+    /*
+    if(currentPlayerStack.current <= 0 || currentBotStack.current <= 0){
+        allIn();
+    }
+    */
+
 
     return (
         <div className="centipede">
@@ -217,42 +266,56 @@ const Kuhn = (props) => {
                 bets like in poker (calling/raising/folding), with the player with the highest card winning if a showdown occurs.
 
             </p>
-            <div className="submitBlottoDiv">
-                <button className="submitBlotto" onClick={deal}>Deal</button>
-            </div>
-            <div className="stacks">
-                <h3>Player Stack: ${playerStack}</h3>
-                <h3>Bot Stack: ${botStack}</h3>
-            </div>
-            {playerCard !== false ?
-                <>
-                <div className="cardLabels">
-                    <h3 className="cardLabelPlayer">Your Card</h3>
-                    <h3 className="cardLabelBot">Bot's Card</h3>
+            {(gameWinner === false) ? <div className="pokerWin">
+                <div className="stacks">
+                    <h3>Player Stack: ${playerStack}</h3>
+                    <h3>Bot Stack: ${botStack}</h3>
                 </div>
+                {playerCard !== false ?
+                    <>
+                    <div className="cardLabels">
+                        <h3 className="cardLabelPlayer">Your Card</h3>
+                        <h3 className="cardLabelBot">Bot's Card</h3>
+                    </div>
+                    <div>
+                        <img src={playerCard} alt="card" className="cards"></img>
+                        {winner !== null ? <img src={botCard} alt="card" className="cards"></img> : <img src={deck} alt="card" className="cards"></img>}
+                    </div>
+                    {winner === null ?
+                        <div className="submitBlottoDiv">
+                            {playerOwes === 0 ?
+                                <div className="noBet">
+                                    <button onClick={playerCheck}>Check</button>
+                                    <button onClick={playerBet}>Bet {anteCost}</button>
+                                </div>
+                                :
+                                <div className="bet">
+                                    <button onClick={playerBet}>Call</button>
+                                    <button onClick={playerFold}>Fold</button>
+                                </div>
+                            }
+                        </div>
+                    : null}
+                    <h3>Bot Action: {botAction}</h3>
+                    <h3>Pot: ${pot}</h3>
+                    {winner ? <h3>{winner} won ${pot}!</h3> : null}
+                    </>
+                : null}
+            {( pot === 0 || winner ) ? 
+            <div className="pokerDeal">
+                <button className="submitBlotto" onClick={deal}>Deal</button>
+            </div> : null}    
+            </div>
+            :
+                <>
                 <div>
                     <img src={playerCard} alt="card" className="cards"></img>
-                    {winner !== null ? <img src={botCard} alt="card" className="cards"></img> : <img src={deck} alt="card" className="cards"></img>}
+                    <img src={botCard} alt="card" className="cards"></img>
                 </div>
-                <div className="submitBlottoDiv">
-                    {playerOwes === 0 ?
-                        <div className="noBet">
-                            <button onClick={playerCheck}>Check</button>
-                            <button onClick={playerBet}>Bet {anteCost}</button>
-                        </div>
-                        :
-                        <div className="bet">
-                            <button onClick={playerBet}>Call</button>
-                            <button onClick={playerFold}>Fold</button>
-                        </div>
-                    }
-                </div>
-                <h3>Bot Action: {botAction}</h3>
-                <h3>Pot: ${pot}</h3>
-                {winner ? <h3>{winner} won ${pot}!</h3> : null}
+                <h3>{winner} won the game round!</h3> 
+                <FontAwesomeIcon icon={faRedo} onClick={refresh} className="shuffle"/>
                 </>
-            : null}
-            <FontAwesomeIcon icon={faRedo} onClick={refresh} className="shuffle"/>
+            }
         </div>
     )
 }

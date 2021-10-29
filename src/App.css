@@ -85,7 +85,7 @@ input[type="number"] {
 
 .submitBlotto {
   text-align: center;
-  margin: 20px;
+  margin: 10px;
 }
 
 .cards {
@@ -100,4 +100,9 @@ input[type="number"] {
 
 .cardLabelPlayer {
   margin-right: 70px;
+}
+
+.pokerDeal {
+  text-align: center;
+  margin: 10px;
 }
