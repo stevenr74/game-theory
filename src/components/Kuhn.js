@@ -6,6 +6,8 @@ import queen  from './images/queen.png'
 import jack  from './images/jack.png'
 import deck from './images/deck.jpg'
 
+//add player action to let players follow..maybe even an output text box at the bottom to show history
+
 const Kuhn = (props) => {
     const cards = {
         1: king,
@@ -26,7 +28,7 @@ const Kuhn = (props) => {
         HUMAN: "You",
     }
 
-    const startingStack = 100;
+    const startingStack = 50;
 
     const [playerCard, setPlayerCard] = useState(false);
     const [playerStack, setPlayerStack] = useState(startingStack);
@@ -170,28 +172,27 @@ const Kuhn = (props) => {
 
     //need to extend logic for K/Q decision making, maybe randomize
     const botChoice = () => {
+        let x = getRandomInt(1,3)
+
         if(currentBotCardNumber.current === 3){
             if(owes.current === 0){
-                //check
-                botCheck();
+                if(x > 2){
+                    botBet();
+                } else{
+                    botCheck();
+                }
             } else {
-                //fold
                 botFold();
             }
         } else if (currentBotCardNumber.current === 2) {
             if(owes.current === 0){
-                //bet or fold
-                botBet();
+                botCheck();
             } else {
-                //human bet, could have king - taking out logic for testing
-                /*
-                if(currentPot.current <= (3 * anteCost)){
-                    botCall();
-                } else {
-                    botFold();
-                }
-                */
-               botFold();
+               if(x > 2){
+                   botCall(); //calling with 1/3 probability
+               } else {
+                   botFold();
+               }
             }
         } else {
             //have king, keep betting
@@ -240,11 +241,8 @@ const Kuhn = (props) => {
     const botBet = () => {
         currentPot.current += anteCost;
         currentBotStack.current -= anteCost;
-        if(owes.current > 0){
-            setBotAction(moves.CALL);
-        } else {
-            setBotAction(moves.BET);
-        }
+        setBotAction(moves.BET);
+        
         owes.current = 0;
 
         setPot(currentPot.current);
@@ -281,9 +279,8 @@ const Kuhn = (props) => {
             <h2>Simplified Poker</h2>
             <p>
                 Also known as Kuhn Poker, this simplified version is an zero-sum imperfect-information game based on standard poker. Two players
-                are dealt a card from a three card deck containing a King, Queen, and Jack, and put in the same ante of ${anteCost}. Players then place
-                bets like in poker (calling/raising/folding), with the player with the highest card winning if a showdown occurs. The bot will vary its 
-                actions with each card to demonstrate different scenarios.
+                are dealt a card from a three card deck containing a King, Queen, and Jack, and put in the same ante of ${anteCost}. Players can 
+                bet like in standard poker, with the player with the highest card winning if a showdown occurs. 
 
             </p>
             {(gameWinner === false) ? <div className="pokerWin">
@@ -333,6 +330,13 @@ const Kuhn = (props) => {
                     <img src={botCard} alt="card" className="cards"></img>
                 </div>
                 <h3>{winner} won the game!</h3> 
+                <p>
+                The game has a mixed-strategy nash equilibrium with an infinite number of strategies for the first player.
+                These strategies are based around the probability of betting with a jack/king, to bluff or get value respectively. 
+                The second player (the bot in this case) has a single equilibrium strategy - always betting with a King, checking/calling with
+                a Queen, and folding (if there is a bet) with a Jack. All equilibrium strategies mix in randomness (eg betting with a Jack 1/3 the time)
+                to not be predictable for the other player. 
+                </p>
                 <FontAwesomeIcon icon={faRedo} onClick={refresh} className="shuffle"/>
                 </>
             }
