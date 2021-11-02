@@ -72,7 +72,11 @@ const Kuhn = (props) => {
         const sendScore = (data) => {
             passGameScore(data);
         }
+
         if((currentPlayerStack.current <= 0 || currentBotStack.current <= 0) && (gameWinner === false)){
+            if(currentBotStack.current <= 0){
+                setBotAction(moves.ALLIN);
+            }
             //find outcome of current hand
             if(currentBotCardNumber.current > currentPlayerCardNumber.current ){
                 currentPlayerStack.current += currentPot.current;
@@ -302,13 +306,13 @@ const Kuhn = (props) => {
                         <div className="submitBlottoDiv">
                             {playerOwes === 0 ?
                                 <div className="noBet">
-                                    <button onClick={playerCheck}>Check</button>
-                                    <button onClick={playerBet}>Bet {anteCost}</button>
+                                    <button className="button1" onClick={playerCheck}>Check</button>
+                                    <button className="button1"  onClick={playerBet}>Bet {anteCost}</button>
                                 </div>
                                 :
                                 <div className="bet">
-                                    <button onClick={playerCall}>Call</button>
-                                    <button onClick={playerFold}>Fold</button>
+                                    <button className="button1"  onClick={playerCall}>Call</button>
+                                    <button className="button1"  onClick={playerFold}>Fold</button>
                                 </div>
                             }
                         </div>
@@ -320,7 +324,7 @@ const Kuhn = (props) => {
                 : null}
             {( pot === 0 || winner ) ? 
             <div className="pokerDeal">
-                <button className="submitBlotto" onClick={deal}>Deal</button>
+                <button className="button1" onClick={deal}>Deal</button>
             </div> : null}    
             </div>
             :

@@ -80,8 +80,8 @@ const Centipede = (props) => {
             <h3>Round is {count}</h3>
             {take ? null : 
                 <div className="options">
-                    <button onClick={handlePass}>Pass</button>
-                    <button onClick={handleTake}>Take</button>
+                    <button className="button1" onClick={handlePass}>Pass</button>
+                    <button className="button1"  onClick={handleTake}>Take</button>
                 </div>
             }
             <h3>Bot Action: {botAction ? "Pass" : null}</h3>

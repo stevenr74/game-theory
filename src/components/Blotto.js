@@ -174,7 +174,7 @@ const Blotto = (props) => {
                 <input type="number" id="bf3" value={values["bf3"]} name="bf3" min="1" max={maxValues["bf3"]} onInput={valuesHandler}/>
                 {winner ? null : 
                     <div className="submitBlottoDiv">
-                        <button className="submitBlotto" type="submit">Submit</button>
+                        <button className="button1" type="submit">Submit</button>
                     </div>
                 }
                 {error ? <p>Enter three numbers totaling {resources}.</p> : null}
