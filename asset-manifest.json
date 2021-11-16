@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/game-theory/static/css/main.f5f99cc8.chunk.css",
-    "main.js": "/game-theory/static/js/main.642cfc96.chunk.js",
-    "main.js.map": "/game-theory/static/js/main.642cfc96.chunk.js.map",
+    "main.css": "/game-theory/static/css/main.bd4077c1.chunk.css",
+    "main.js": "/game-theory/static/js/main.849ed1b7.chunk.js",
+    "main.js.map": "/game-theory/static/js/main.849ed1b7.chunk.js.map",
     "runtime-main.js": "/game-theory/static/js/runtime-main.b0edec37.js",
     "runtime-main.js.map": "/game-theory/static/js/runtime-main.b0edec37.js.map",
-    "static/js/2.636bcbfb.chunk.js": "/game-theory/static/js/2.636bcbfb.chunk.js",
-    "static/js/2.636bcbfb.chunk.js.map": "/game-theory/static/js/2.636bcbfb.chunk.js.map",
+    "static/js/2.e4a78d6d.chunk.js": "/game-theory/static/js/2.e4a78d6d.chunk.js",
+    "static/js/2.e4a78d6d.chunk.js.map": "/game-theory/static/js/2.e4a78d6d.chunk.js.map",
     "static/js/3.9a3cb512.chunk.js": "/game-theory/static/js/3.9a3cb512.chunk.js",
     "static/js/3.9a3cb512.chunk.js.map": "/game-theory/static/js/3.9a3cb512.chunk.js.map",
     "index.html": "/game-theory/index.html",
-    "static/css/main.f5f99cc8.chunk.css.map": "/game-theory/static/css/main.f5f99cc8.chunk.css.map",
-    "static/js/2.636bcbfb.chunk.js.LICENSE.txt": "/game-theory/static/js/2.636bcbfb.chunk.js.LICENSE.txt",
+    "static/css/main.bd4077c1.chunk.css.map": "/game-theory/static/css/main.bd4077c1.chunk.css.map",
+    "static/js/2.e4a78d6d.chunk.js.LICENSE.txt": "/game-theory/static/js/2.e4a78d6d.chunk.js.LICENSE.txt",
     "static/media/deck.820c2d2f.jpg": "/game-theory/static/media/deck.820c2d2f.jpg",
     "static/media/jack.44ec3312.png": "/game-theory/static/media/jack.44ec3312.png",
     "static/media/king.e4a4cb7b.png": "/game-theory/static/media/king.e4a4cb7b.png",
@@ -19,8 +19,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.b0edec37.js",
-    "static/js/2.636bcbfb.chunk.js",
-    "static/css/main.f5f99cc8.chunk.css",
-    "static/js/main.642cfc96.chunk.js"
+    "static/js/2.e4a78d6d.chunk.js",
+    "static/css/main.bd4077c1.chunk.css",
+    "static/js/main.849ed1b7.chunk.js"
   ]
 }
