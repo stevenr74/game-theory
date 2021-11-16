@@ -9,12 +9,14 @@ import deck from './images/deck.jpg'
 //add player action to let players follow..maybe even an output text box at the bottom to show history
 
 const Kuhn = (props) => {
+    const anteCost = 10;
+    const startingStack = 50;
+
     const cards = {
         1: king,
         2: queen, 
         3: jack
     };
-    const anteCost = 10;
     const moves = {
         CHECK: "Check",
         BET: "Bet",
@@ -27,8 +29,6 @@ const Kuhn = (props) => {
         BOT: "Bot",
         HUMAN: "You",
     }
-
-    const startingStack = 50;
 
     const [playerCard, setPlayerCard] = useState(false);
     const [playerStack, setPlayerStack] = useState(startingStack);
@@ -67,26 +67,22 @@ const Kuhn = (props) => {
         setGameWinner(false);
     }
 
+
     //monitor player/bot scores, set winner and update winnings
     useEffect(() => {    
         const sendScore = (data) => {
             passGameScore(data);
         }
 
+        //monitor player stacks for all-in situations
         if((currentPlayerStack.current <= 0 || currentBotStack.current <= 0) && (gameWinner === false)){
             if(currentBotStack.current <= 0){
                 setBotAction(moves.ALLIN);
+            } else {
+                setBotAction(moves.CALL); 
             }
             //find outcome of current hand
-            if(currentBotCardNumber.current > currentPlayerCardNumber.current ){
-                currentPlayerStack.current += currentPot.current;
-                setWinner(players.HUMAN);
-                setPlayerStack(currentPlayerStack.current);
-            } else {
-                currentBotStack.current += currentPot.current;
-                setWinner(players.BOT);
-                setBotStack(currentBotStack.current);
-            }
+            showdown();
 
             //find if a player is eliminated
             if(currentBotStack.current <= 0){
@@ -107,11 +103,9 @@ const Kuhn = (props) => {
     }
 
     const deal = () => {
-        
         setWinner(null);
         setPlayerOwes(0);
         setBotAction(moves.NONE);
-        
         currentPot.current = 0;
         owes.current = 0;
         var pCard = getRandomInt(1, 3);
@@ -133,7 +127,6 @@ const Kuhn = (props) => {
         currentPot.current = anteCost + anteCost;
         currentPlayerStack.current -= anteCost;
         currentBotStack.current -= anteCost;
-
         setPot(currentPot.current);
         setPlayerStack(currentPlayerStack.current);
         setBotStack(currentBotStack.current);
@@ -149,7 +142,6 @@ const Kuhn = (props) => {
         currentPlayerStack.current -= anteCost;
         currentPot.current += anteCost;
         owes.current = anteCost;
-
         setPot(currentPot.current);
         setPlayerOwes(0);
         setPlayerStack(currentPlayerStack.current)
@@ -159,22 +151,18 @@ const Kuhn = (props) => {
     const playerCall = () => {
         currentPlayerStack.current -= anteCost;
         currentPot.current += anteCost;
-        
         setPot(currentPot.current);
         setPlayerOwes(0);
         setPlayerStack(currentPlayerStack.current);
-
         showdown();
     }
 
     const playerFold = () => {
         currentBotStack.current += currentPot.current;
-
         setWinner(players.BOT);
         setBotStack(currentBotStack.current);
     }
 
-    //need to extend logic for K/Q decision making, maybe randomize
     const botChoice = () => {
         let x = getRandomInt(1,3)
 
@@ -210,35 +198,17 @@ const Kuhn = (props) => {
 
     //check->check = showdown
     const botCheck = () => {
-        //check-check = find winner
         setBotAction(moves.CHECK);
-        if(currentBotCardNumber.current < currentPlayerCardNumber.current ){
-            //bot wins
-            currentBotStack.current += currentPot.current;
-
-            setWinner(players.BOT);
-            setBotAction(moves.CHECK);
-            setBotStack(currentBotStack.current);
-        } else {
-            //player wins
-            currentPlayerStack.current += currentPot.current;
-
-            setWinner(players.HUMAN);
-            setBotAction(moves.CHECK);
-            setPlayerStack(currentPlayerStack.current);
-        }
-        //find winner
+        showdown();
     }
 
     const botCall = () => {
         currentPot.current += anteCost;
         currentBotStack.current -= anteCost;
         owes.current = 0;
-
         setPot(currentPot.current);
         setBotStack(currentBotStack.current);
         setBotAction(moves.CALL);
-
         showdown();
     }
 
@@ -246,9 +216,7 @@ const Kuhn = (props) => {
         currentPot.current += anteCost;
         currentBotStack.current -= anteCost;
         setBotAction(moves.BET);
-        
         owes.current = 0;
-
         setPot(currentPot.current);
         setBotStack(currentBotStack.current);
         setPlayerOwes(anteCost);
@@ -256,7 +224,6 @@ const Kuhn = (props) => {
 
     const botFold = () => {
         currentPlayerStack.current += currentPot.current;
-
         setWinner(players.HUMAN);
         setBotAction(moves.FOLD);
         setPlayerStack(currentPlayerStack.current);
@@ -264,15 +231,11 @@ const Kuhn = (props) => {
 
     const showdown = () => {
         if(currentBotCardNumber.current < currentPlayerCardNumber.current ){
-            //bot wins
             currentBotStack.current += currentPot.current;
-
             setWinner(players.BOT);
             setBotStack(currentBotStack.current);
         } else {
-            //player wins
             currentPlayerStack.current += currentPot.current;
-
             setWinner(players.HUMAN);
             setPlayerStack(currentPlayerStack.current);
         }

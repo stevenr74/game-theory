@@ -5,7 +5,7 @@ import Blotto from './components/Blotto.js';
 import Score from './components/Score.js';
 import Kuhn from './components/Kuhn.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faChevronLeft, faCircle } from '@fortawesome/free-solid-svg-icons';
 
 //have a winnings section to track how well the person does over all games - should we include bot winnings?
 //Kuhn poker
@@ -41,8 +41,13 @@ function App() {
         <h1>Understanding Game Theory</h1>
       </header>
       <Score score={gameScore} />
-      <FontAwesomeIcon icon={faChevronLeft} className="shuffle" onClick={handlePrev}/>
-      <FontAwesomeIcon icon={faChevronRight} className="shuffle" onClick={handleNext}/>
+      <div className="icon_bar">
+        <FontAwesomeIcon icon={faChevronLeft} className="shuffle" onClick={handlePrev}/>
+        <FontAwesomeIcon icon={faCircle} className={game === 0 ? "shuffle_page_icon_current" : "shuffle_page_icon"}/>
+        <FontAwesomeIcon icon={faCircle} className={game === 1 ? "shuffle_page_icon_current" : "shuffle_page_icon"} />
+        <FontAwesomeIcon icon={faCircle} className={game === 2 ? "shuffle_page_icon_current" : "shuffle_page_icon"} />
+        <FontAwesomeIcon icon={faChevronRight} className="shuffle" onClick={handleNext}/>
+      </div>
       {game === 0 ? <Centipede passGameScore={totalScore}/> : null}
       {game === 1 ? <Blotto  passGameScore={totalScore} /> : null}
       {game === 2 ? <Kuhn passGameScore={totalScore}/> : null}
